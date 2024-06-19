@@ -10,7 +10,7 @@
 }
 
 .explore-menu-text {
-  max-width: 60%;
+  max-width: 100%;
   color: var(--gray);
   text-align: justify;
 }

@@ -1,10 +1,31 @@
-import { createContext, useState } from "react";
-import { food_list } from "../assets/assets";
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 export const StoreContext = createContext(null);
 
+const API_URL = "http://localhost:4000/api/v1";
+
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
+  const [foodList, setFoodList] = useState([]);
+  const [exploreMenu, setExploreMenu] = useState([]);
+
+  useEffect(() => {
+    const fetchMenuList = async () => {
+      try {
+        const menures = await axios.get(`${API_URL}/menu/`);
+        setFoodList(menures.data);
+        const exploreres = await axios.get(`${API_URL}/menu/explore`);
+        setExploreMenu(exploreres.data);
+      } catch (err) {
+        console.error("Error fetching menu list:", err);
+      }
+    };
+
+    fetchMenuList();
+  }, []);
+
+  const menuItems = Array.isArray(foodList.data) ? foodList.data : [];
 
   const addToCart = (itemId) => {
     if (!cartItems[itemId]) {
@@ -36,7 +57,7 @@ const StoreContextProvider = (props) => {
     let totalAmount = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        let itemInfo = food_list.find((product) => product._id === item);
+        let itemInfo = menuItems.find((product) => product._id === item);
         totalAmount += itemInfo.price * cartItems[item];
       }
     }
@@ -44,7 +65,8 @@ const StoreContextProvider = (props) => {
   };
 
   const contextValue = {
-    food_list,
+    foodList,
+    exploreMenu,
     cartItems,
     setCartItems,
     addToCart,
