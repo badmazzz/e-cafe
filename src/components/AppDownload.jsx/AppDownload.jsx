@@ -1,32 +1,35 @@
-import React,{useState} from "react";
+import React, { useState, useContext } from "react";
 import "./AppDownload.css";
+import { StoreContext } from "../../context/StoreContext";
 
 const AppDownload = () => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [guests, setGuests] = useState("");
+  const [guest, setGuest] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const { handleTableRegistration } = useContext(StoreContext);
+
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
 
-    console.log("Form submitted:", { name, email, date, time, guests });
-
+    handleTableRegistration(name, date, time, guest);
     setShowPopup(true);
 
+
     setName("");
-    setEmail("");
     setDate("");
     setTime("");
-    setGuests("");
-    ds;
+    setGuest("");
+
     setTimeout(() => {
       setShowPopup(false);
-    }, 3000);
+    }, 2000);
   };
+
   return (
-    <div className="reservation-container">
+    <div className="reservation-container" id="table">
+      <hr />
       <h2>Table Reservation</h2>
       <form className="reservation-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -35,15 +38,6 @@ const AppDownload = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -69,13 +63,20 @@ const AppDownload = () => {
           <label>Number of Guests:</label>
           <input
             type="number"
-            value={guests}
-            onChange={(e) => setGuests(e.target.value)}
+            value={guest}
+            onChange={(e) => setGuest(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Reserve Table</button>
+        <div className="btn">
+          <button type="submit">Reserve Table</button>
+        </div>
       </form>
+      {showPopup && (
+        <div className="popup">
+          <p>Reservation Successful!</p>
+        </div>
+      )}
     </div>
   );
 };

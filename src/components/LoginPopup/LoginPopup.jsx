@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
-import axios from "axios";
+import { StoreContext } from "../../context/StoreContext";
 
 const LoginPopup = ({ setShowLogin, setUser }) => {
-  const [currentState, setCurrentState] = useState("Sign up");
+  const { handleLogin, handleRegister } = useContext(StoreContext);
+  const [currentState, setCurrentState] = useState("Login");
   const [username, setUsername] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState(null);
@@ -15,43 +16,18 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("address", address);
-    formData.append("avatar", avatar);
-
-    try {
-      if (currentState === "Sign up") {
-        const response = await axios.post(
-          "http://localhost:4000/api/v1/user/register",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      } else {
-        const response = await axios.post(
-          "http://localhost:4000/api/v1/user/login",
-          {
-            email,
-            password,
-          }
-        );
-        const userData = response.data.data.user;
-        const { accessToken } = response.data.data;
-
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("accessToken", accessToken);
-
-        setUser(userData);
-        setShowLogin(false);
-      }
-    } catch (err) {
-      setError(err.response.data.message || "Something went wrong");
+    if (currentState === "Sign up") {
+      handleRegister(
+        username,
+        email,
+        password,
+        address,
+        avatar,
+        setUser,
+        setShowLogin
+      );
+    } else {
+      handleLogin(email, password, setUser, setShowLogin);
     }
   };
 

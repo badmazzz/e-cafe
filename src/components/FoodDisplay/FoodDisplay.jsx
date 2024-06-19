@@ -13,6 +13,7 @@ const FoodDisplay = ({ category, setCategory }) => {
   return (
     <div className="food-display" id="food-display">
       <ExploreMenu category={category} setCategory={setCategory}></ExploreMenu>
+      <hr />
 
       <div className="food-display-list">
         {menuItems.map((item) => {

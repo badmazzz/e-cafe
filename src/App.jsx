@@ -7,7 +7,6 @@ import FoodDisplay from "./components/FoodDisplay/FoodDisplay";
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
 import Footer from "./components/Footer/Footer";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
-import axios from "axios";
 
 const App = () => {
   const [category, setCategory] = useState("All");

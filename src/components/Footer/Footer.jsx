@@ -16,8 +16,8 @@ const Footer = () => {
           <p>
             E-CAFE is more than just a culinary destination; it's a reflection
             of a dream nurtured by a passionate soul. Founded by Team, a
-            culinary enthusiast with a zest for creativity,E-CAFE Cafe came into
-            being in 2022.
+            culinary enthusiast with a zest for creativity, E-CAFE Cafe came
+            into being in 2022.
           </p>
           <div className="footer-social-icons">
             <a href="https://www.facebook.com">
@@ -26,7 +26,7 @@ const Footer = () => {
             <a href="https://www.twitter.com">
               <img src={assets.twitter_icon} alt="twitter" />
             </a>
-            <a href="https://www.linkedin.com">
+            <a href="https://www.linkedin.com/in/meshv-patel" target="_blank">
               <img src={assets.linkedin_icon} alt="linkedin" />
             </a>
           </div>
