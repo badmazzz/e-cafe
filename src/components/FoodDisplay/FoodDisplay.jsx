@@ -7,16 +7,10 @@ import ExploreMenu from "../ExploreMenu/ExploreMenu";
 const FoodDisplay = ({ category, setCategory }) => {
   const { foodList } = useContext(StoreContext);
 
-  // Check if foodList.data exists and is an array
-  const menuItems = Array.isArray(foodList.data) ? foodList.data : [];
-
   return (
     <div className="food-display" id="food-display">
-      <ExploreMenu category={category} setCategory={setCategory}></ExploreMenu>
-      <hr />
-
       <div className="food-display-list">
-        {menuItems.map((item) => {
+        {foodList.map((item) => {
           if (category === "All" || category === item.category) {
             return (
               <FoodItem

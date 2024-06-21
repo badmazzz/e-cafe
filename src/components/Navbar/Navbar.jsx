@@ -15,7 +15,7 @@ const Navbar = ({ setShowLogin, user, setUser }) => {
       setMenu("home");
     } else if (location.pathname.startsWith("/menu")) {
       setMenu("menu");
-    } else if (location.hash === "#table") {
+    } else if (location.pathname.startsWith("/table")) {
       setMenu("table");
     } else if (location.hash === "#footer") {
       setMenu("contact-us");
@@ -48,7 +48,7 @@ const Navbar = ({ setShowLogin, user, setUser }) => {
             Menu
           </Link>
           <a
-            href="#table"
+            href="/table"
             onClick={handleTableBookingClick}
             className={menu === "table" ? "active" : ""}
           >

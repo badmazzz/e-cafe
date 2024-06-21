@@ -11,29 +11,37 @@ export const StoreContext = createContext(null);
 const ecafe = "http://localhost:4000/api/v1";
 
 const StoreContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState({});
+  const [cartItems, setCartItems] = useState([]);
   const [foodList, setFoodList] = useState([]);
   const [exploreMenu, setExploreMenu] = useState([]);
+  const [table, setTable] = useState([]);
   const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchMenuList = async () => {
-      try {
-        const menuRes = await axios.get(`${ecafe}/menu/`);
-        setFoodList(menuRes.data);
-        const exploreRes = await axios.get(`${ecafe}/menu/explore`);
-        setExploreMenu(exploreRes.data);
-      } catch (err) {
-        console.error("Error fetching menu list:", err);
-      }
-    };
-
     fetchMenuList();
+    fetchTableList();
   }, []);
+  const fetchMenuList = async () => {
+    try {
+      const menuRes = await axios.get(`${ecafe}/menu/`);
+      setFoodList(menuRes.data.data);
+      const exploreRes = await axios.get(`${ecafe}/menu/explore`);
+      setExploreMenu(exploreRes.data);
+    } catch (err) {
+      console.error("Error fetching menu list:", err);
+    }
+  };
 
-  const menuItems = Array.isArray(foodList.data) ? foodList.data : [];
+  const fetchTableList = async () => {
+    try {
+      const tableRes = await axios.get(`${ecafe}/table/`);
+      setTable(tableRes.data.data);
+    } catch (err) {
+      console.error("Error fetching menu list:", err);
+    }
+  };
 
   const addToCart = (itemId) => {
     if (!cartItems[itemId]) {
@@ -65,7 +73,7 @@ const StoreContextProvider = (props) => {
     let totalAmount = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        let itemInfo = menuItems.find((product) => product._id === item);
+        let itemInfo = foodList.find((product) => product._id === item);
         totalAmount += itemInfo.price * cartItems[item];
       }
     }
@@ -167,18 +175,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  const handleTableBookingClick = () => {
-    if (location.pathname !== "/") {
-      navigate("/", { replace: true });
-      setTimeout(() => {
-        window.location.hash = "#table";
-      }, 100); 
-    } else {
-      window.location.hash = "#table";
-    }
-  };
-
-  const handleTableRegistration = async (name, date, time, guests,set) => {
+  const handleTableRegistration = async (name, date, time, guests, set) => {
     const data = {
       name,
       date,
@@ -201,9 +198,19 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  const handleDeleteTable = async (id) => {
+    try {
+      const deleteTable = await axios.delete(`${ecafe}/table/${id}`);
+      console.log("Deleted.................");
+    } catch (error) {
+      console.error("Error in deleteing Table", error);
+    }
+  };
+
   const contextValue = {
     foodList,
     exploreMenu,
+    table,
     cartItems,
     setCartItems,
     addToCart,
@@ -213,8 +220,8 @@ const StoreContextProvider = (props) => {
     handleLogin,
     handleRegister,
     handleLogout,
-    handleTableBookingClick,
     handleTableRegistration,
+    handleDeleteTable,
   };
 
   return (

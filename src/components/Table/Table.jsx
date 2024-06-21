@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
-import "./AppDownload.css";
+import "./Table.css";
 import { StoreContext } from "../../context/StoreContext";
+import TableReserved from "../TableReserved/TableReserved";
 
-const AppDownload = () => {
+const Table = () => {
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -11,11 +12,10 @@ const AppDownload = () => {
   const { handleTableRegistration } = useContext(StoreContext);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     handleTableRegistration(name, date, time, guest);
     setShowPopup(true);
-
 
     setName("");
     setDate("");
@@ -29,7 +29,6 @@ const AppDownload = () => {
 
   return (
     <div className="reservation-container" id="table">
-      <hr />
       <h2>Table Reservation</h2>
       <form className="reservation-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -77,8 +76,9 @@ const AppDownload = () => {
           <p>Reservation Successful!</p>
         </div>
       )}
+      <hr />
     </div>
   );
 };
 
-export default AppDownload;
+export default Table;

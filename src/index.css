@@ -28,7 +28,10 @@ a {
   color: inherit;
 }
 hr {
-  border-top: 1px solid var(--gray);
+  margin: 10px 0;
+  height: 2px;
+  background-color: #e2e2e2;
+  border: none;
 }
 
 @keyframes fadeIn {

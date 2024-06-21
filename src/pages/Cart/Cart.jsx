@@ -9,7 +9,7 @@ export const deliveryFee = 2;
 const Cart = () => {
   const {
     cartItems,
-    food_list,
+    foodList,
     removeFromCart,
     getTotalCartAmount,
     getTotalQuantity,
@@ -33,14 +33,11 @@ const Cart = () => {
         {totalQuantity === 0 ? (
           <p className="NoItems">No Items in cart</p>
         ) : (
-          food_list.map((item, index) => {
+          foodList.map((item) => {
             if (cartItems[item._id] > 0) {
               return (
                 <React.Fragment key={item._id}>
-                  <div
-                    className="cart-items-title cart-items-item"
-                    key={item._id}
-                  >
+                  <div className="cart-items-title cart-items-item">
                     <img src={item.image} alt="food img" />
                     <p>{item.name}</p>
                     <p>${item.price}</p>
@@ -56,10 +53,11 @@ const Cart = () => {
                       />
                     </p>
                   </div>
-                  <hr key={`hr-${item._id}-${index}`} />
+                  <hr />
                 </React.Fragment>
               );
             }
+            return null; // Add this to avoid returning undefined
           })
         )}
       </div>
@@ -73,7 +71,7 @@ const Cart = () => {
             </div>
             <hr />
             <div className="cart-total-details">
-              <p>Delivery Free</p>
+              <p>Delivery Fee</p>
               <p>${getTotalCartAmount() === 0 ? 0 : deliveryFee}</p>
             </div>
             <hr />

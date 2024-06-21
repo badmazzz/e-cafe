@@ -1,7 +1,4 @@
-
-
 import header_img from "./header_img.png";
-
 
 import add_icon_white from "./add_icon_white.png";
 import add_icon_green from "./add_icon_green.png";
@@ -17,6 +14,8 @@ import profile_icon from "./profile_icon.png";
 import bag_icon from "./bag_icon.png";
 import logout_icon from "./logout_icon.png";
 import parcel_icon from "./parcel_icon.png";
+import edit_icon from "./edit_icon.png";
+import trash_icon from "./trash_icon.png";
 
 export const assets = {
   header_img,
@@ -34,4 +33,6 @@ export const assets = {
   logout_icon,
   bag_icon,
   parcel_icon,
+  edit_icon,
+  trash_icon,
 };
