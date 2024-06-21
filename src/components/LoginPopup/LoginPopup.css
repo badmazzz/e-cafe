@@ -56,6 +56,18 @@
   cursor: pointer;
 }
 
+.multi-fields {
+  display: flex;
+  gap: 10px;
+
+}
+.multi-fields input{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 60%;
+}
+
 .login-popup-condition {
   display: flex;
   align-items: center;

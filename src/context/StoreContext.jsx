@@ -2,7 +2,6 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import ErrorCheck from "../components/Error/Error";
 import Cookies from "js-cookie";
-import { useNavigate, useLocation } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
 
@@ -16,13 +15,23 @@ const StoreContextProvider = (props) => {
   const [exploreMenu, setExploreMenu] = useState([]);
   const [table, setTable] = useState([]);
   const [error, setError] = useState("");
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [user, setUser] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     fetchMenuList();
     fetchTableList();
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
   }, []);
+
+  useEffect(() => {
+    getTotalCartAmount();
+  }, [cartItems]);
+
   const fetchMenuList = async () => {
     try {
       const menuRes = await axios.get(`${ecafe}/menu/`);
@@ -44,40 +53,57 @@ const StoreContextProvider = (props) => {
   };
 
   const addToCart = (itemId) => {
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
+    setCartItems((prev) => {
+      const existingItemIndex = prev.findIndex(
+        (item) => item.menuId === itemId
+      );
+
+      if (existingItemIndex === -1) {
+        // Item doesn't exist in the cart, add it with quantity 1
+        return [...prev, { menuId: itemId, quantity: 1 }];
+      } else {
+        // Item exists, increment the quantity
+        return prev.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+    });
   };
 
   const removeFromCart = (itemId) => {
-    if (cartItems[itemId] === 1) {
-      const newCartItems = { ...cartItems };
-      delete newCartItems[itemId];
-      setCartItems(newCartItems);
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    }
+    setCartItems((prev) => {
+      const existingItemIndex = prev.findIndex(
+        (item) => item.menuId === itemId
+      );
+
+      if (existingItemIndex !== -1) {
+        if (prev[existingItemIndex].quantity === 1) {
+          return prev.filter((item, index) => index !== existingItemIndex);
+        } else {
+          return prev.map((item, index) =>
+            index === existingItemIndex
+              ? { ...item, quantity: item.quantity - 1 }
+              : item
+          );
+        }
+      }
+
+      return prev;
+    });
   };
 
   const getTotalQuantity = () => {
-    let totalQuantity = 0;
-    for (const itemId in cartItems) {
-      totalQuantity += cartItems[itemId];
-    }
-    return totalQuantity;
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
   const getTotalCartAmount = () => {
-    let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = foodList.find((product) => product._id === item);
-        totalAmount += itemInfo.price * cartItems[item];
-      }
-    }
-    return totalAmount;
+    return cartItems.reduce((total, item) => {
+      const itemInfo = foodList.find((product) => product._id === item.menuId);
+      setTotalAmount(total + (itemInfo ? itemInfo.price * item.quantity : 0));
+      return total + (itemInfo ? itemInfo.price * item.quantity : 0);
+    }, 0);
   };
 
   const handleLogin = async (email, password, setUser, setShowLogin) => {
@@ -112,12 +138,31 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  const placeOrder = async () => {
+    const data = {
+      cartItems,
+      totalAmount,
+    };
+    try {
+      const orderRes = await axios.post(`${ecafe}/order/create`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log("Order not placed...", error);
+    }
+  };
+
   const handleRegister = async (
     username,
     email,
     password,
-    address,
+    street,
+    city,
+    zipcode,
     avatar,
+    phone,
     setUser,
     setShowLogin
   ) => {
@@ -125,8 +170,13 @@ const StoreContextProvider = (props) => {
     formData.append("username", username);
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("address", address);
+    formData.append("street", street);
+    formData.append("zipcode", zipcode);
+    formData.append("city", city);
     formData.append("avatar", avatar);
+    formData.append("phone", phone);
+
+    console.log(formData);
 
     try {
       const response = await axios.post(`${ecafe}/user/register`, formData, {
@@ -136,7 +186,7 @@ const StoreContextProvider = (props) => {
       });
       console.log(response.data);
 
-      handleLogin(email, password, setUser, setShowLogin);
+      await handleLogin(email, password, setUser, setShowLogin);
     } catch (err) {
       console.error("Registration error:", err);
       if (err.response && err.response.data) {
@@ -191,8 +241,6 @@ const StoreContextProvider = (props) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data);
-      console.log(response.status);
     } catch (err) {
       console.error("Registration error:", err);
     }
@@ -203,7 +251,7 @@ const StoreContextProvider = (props) => {
       const deleteTable = await axios.delete(`${ecafe}/table/${id}`);
       console.log("Deleted.................");
     } catch (error) {
-      console.error("Error in deleteing Table", error);
+      console.error("Error in deleting Table", error);
     }
   };
 
@@ -222,6 +270,12 @@ const StoreContextProvider = (props) => {
     handleLogout,
     handleTableRegistration,
     handleDeleteTable,
+    totalAmount,
+    placeOrder,
+    user,
+    setUser,
+    showPopup,
+    setShowPopup,
   };
 
   return (

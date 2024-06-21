@@ -6,11 +6,14 @@ import { StoreContext } from "../../context/StoreContext";
 const FoodItem = ({ id, name, price, description, image }) => {
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
 
+  const cartItem = cartItems.find((item) => item.menuId === id);
+  const itemQuantity = cartItem ? cartItem.quantity : 0;
+
   return (
     <div className="food-item">
       <div className="food-item-img-container">
         <img src={image} alt="image" className="food-item-img" />
-        {!cartItems[id] ? (
+        {!itemQuantity ? (
           <img
             src={assets.add_icon_white}
             alt="add_icon_white"
@@ -24,7 +27,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
               alt="remove_icon_red"
               onClick={() => removeFromCart(id)}
             />
-            <p>{cartItems[id]}</p>
+            <p>{itemQuantity}</p>
             <img
               src={assets.add_icon_green}
               alt="add_icon_green"

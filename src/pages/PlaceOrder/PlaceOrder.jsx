@@ -1,36 +1,45 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import "./PlaceOrder.css";
 import { deliveryFee } from "../Cart/Cart";
 import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount } = useContext(StoreContext);
+  const { totalAmount, user, placeOrder } = useContext(StoreContext);
   const navigate = useNavigate();
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  const handleAddressChange = (index) => {
+    setSelectedAddress(index);
+  };
+
   return (
     <>
       <button className="GoBack" onClick={() => navigate("/cart")}>
-        ⬅️Go Back to Cart Page
+        ⬅ Go Back to Cart Page
       </button>
 
       <form className="place-order">
         <div className="place-order-left">
-          <h2 className="title">Delivery Information</h2>
-          <div className="multi-fields">
-            <input type="text" placeholder="First Name" />
-            <input type="text" placeholder="Last Name" />
-          </div>
-          <input type="email" placeholder="Email Address" />
-          <input type="text" placeholder="Street" />
-          <div className="multi-fields">
-            <input type="text" placeholder="City" />
-            <input type="text" placeholder="State" />
-          </div>
-          <div className="multi-fields">
-            <input type="number" placeholder="Zip Code" />
-            <input type="text" placeholder="Country" />
-          </div>
-          <input type="number" placeholder="Phone" />
+          <h2 className="title">Select Delivery Address</h2>
+          {user.address.map((addr, index) => (
+            <div
+              key={index}
+              className={`address-item ${
+                selectedAddress === index ? "selected" : ""
+              }`}
+              onClick={() => handleAddressChange(index)}
+            >
+              <input
+                type="checkbox"
+                checked={selectedAddress === index}
+                readOnly
+              />
+              <span>
+                {addr.street}, {addr.city}, {addr.zipcode}
+              </span>
+            </div>
+          ))}
         </div>
 
         <div className="place-order-right">
@@ -39,25 +48,23 @@ const PlaceOrder = () => {
             <div>
               <div className="cart-total-details">
                 <p>Subtotal</p>
-                <p>${getTotalCartAmount()}</p>
+                <p>${totalAmount}</p>
               </div>
               <hr />
               <div className="cart-total-details">
-                <p>Delivery Free</p>
-                <p>${getTotalCartAmount() === 0 ? 0 : deliveryFee}</p>
+                <p>Delivery Fee</p>
+                <p>${totalAmount === 0 ? 0 : deliveryFee}</p>
               </div>
               <hr />
               <div className="cart-total-details">
                 <b>Total</b>
-                <b>
-                  $
-                  {getTotalCartAmount() === 0
-                    ? 0
-                    : getTotalCartAmount() + deliveryFee}
-                </b>
+                <b>${totalAmount === 0 ? 0 : totalAmount + deliveryFee}</b>
               </div>
             </div>
-            <button disabled={getTotalCartAmount() === 0}>
+            <button
+              onClick={placeOrder}
+              disabled={totalAmount === 0 || selectedAddress === null}
+            >
               PROCEED TO Payment
             </button>
           </div>

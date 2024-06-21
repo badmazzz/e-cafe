@@ -4,8 +4,9 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 
-const Navbar = ({ setShowLogin, user, setUser }) => {
-  const { getTotalQuantity, handleLogout, handleTableBookingClick } = useContext(StoreContext);
+const Navbar = ({ setShowLogin }) => {
+  const { getTotalQuantity, handleLogout, handleTableBookingClick, user , setUser} =
+    useContext(StoreContext);
   const totalQuantity = getTotalQuantity();
   const location = useLocation();
 

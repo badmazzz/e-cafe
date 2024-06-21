@@ -3,11 +3,14 @@ import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 
-const LoginPopup = ({ setShowLogin, setUser }) => {
-  const { handleLogin, handleRegister } = useContext(StoreContext);
+const LoginPopup = ({ setShowLogin }) => {
+  const { handleLogin, handleRegister, setUser } = useContext(StoreContext);
   const [currentState, setCurrentState] = useState("Login");
   const [username, setUsername] = useState("");
-  const [address, setAddress] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [phone, setPhone] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,14 +18,18 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(username, email, password, avatar, phone);
 
     if (currentState === "Sign up") {
       handleRegister(
         username,
         email,
         password,
-        address,
+        street,
+        city,
+        zipcode,
         avatar,
+        phone,
         setUser,
         setShowLogin
       );
@@ -52,11 +59,31 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <textarea
-                placeholder="Address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
+              <input
+                type="text"
+                placeholder="Street"
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
+              />
+              <div className="multi-fields">
+                <input
+                  type="text"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="Zip Code"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                />
+              </div>
+              <input
+                type="number"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
               <input
                 type="file"

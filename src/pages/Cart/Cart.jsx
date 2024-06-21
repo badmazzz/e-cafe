@@ -11,11 +11,24 @@ const Cart = () => {
     cartItems,
     foodList,
     removeFromCart,
-    getTotalCartAmount,
     getTotalQuantity,
+    totalAmount,
+    placeOrder,
+    showPopup,
+    setShowPopup
   } = useContext(StoreContext);
+
   const totalQuantity = getTotalQuantity();
   const navigate = useNavigate();
+
+  const handleOrder = () => {
+    setShowPopup(true);
+
+    placeOrder();
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 1500);
+  };
 
   return (
     <div className="cart">
@@ -33,19 +46,20 @@ const Cart = () => {
         {totalQuantity === 0 ? (
           <p className="NoItems">No Items in cart</p>
         ) : (
-          foodList.map((item) => {
-            if (cartItems[item._id] > 0) {
+          cartItems.map(({ menuId, quantity }) => {
+            const item = foodList.find((product) => product._id === menuId);
+            if (item) {
               return (
                 <React.Fragment key={item._id}>
                   <div className="cart-items-title cart-items-item">
                     <img src={item.image} alt="food img" />
                     <p>{item.name}</p>
                     <p>${item.price}</p>
-                    <p>{cartItems[item._id]}</p>
-                    <p>${item.price * cartItems[item._id]}</p>
+                    <p>{quantity}</p>
+                    <p>${item.price * quantity}</p>
                     <p
                       className="Remove"
-                      onClick={() => removeFromCart(item._id)}
+                      onClick={() => removeFromCart(menuId)}
                     >
                       <img
                         src={assets.remove_icon_cross}
@@ -57,7 +71,7 @@ const Cart = () => {
                 </React.Fragment>
               );
             }
-            return null; // Add this to avoid returning undefined
+            return null; // Avoid returning undefined
           })
         )}
       </div>
@@ -67,28 +81,20 @@ const Cart = () => {
           <div>
             <div className="cart-total-details">
               <p>Subtotal</p>
-              <p>${getTotalCartAmount()}</p>
+              <p>${totalAmount}</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
-              <p>${getTotalCartAmount() === 0 ? 0 : deliveryFee}</p>
+              <p>${totalAmount === 0 ? 0 : deliveryFee}</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <b>Total</b>
-              <b>
-                $
-                {getTotalCartAmount() === 0
-                  ? 0
-                  : getTotalCartAmount() + deliveryFee}
-              </b>
+              <b>${totalAmount === 0 ? 0 : totalAmount + deliveryFee}</b>
             </div>
           </div>
-          <button
-            disabled={getTotalCartAmount() === 0}
-            onClick={() => navigate("/order")}
-          >
+          <button disabled={totalAmount === 0} onClick={handleOrder}>
             PROCEED TO CHECKOUT
           </button>
         </div>
@@ -102,6 +108,11 @@ const Cart = () => {
           </div>
         </div>
       </div>
+      {showPopup && (
+        <div className="popup">
+          <p>Order Placed Successful!</p>
+        </div>
+      )}
     </div>
   );
 };
