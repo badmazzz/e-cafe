@@ -3,8 +3,9 @@ import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 
-const LoginPopup = ({ setShowLogin }) => {
-  const { handleLogin, handleRegister, setUser } = useContext(StoreContext);
+const LoginPopup = () => {
+  const { handleLogin, handleRegister, setUser, setShowLogin } =
+    useContext(StoreContext);
   const [currentState, setCurrentState] = useState("Login");
   const [username, setUsername] = useState("");
   const [street, setStreet] = useState("");

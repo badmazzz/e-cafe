@@ -18,6 +18,7 @@ const StoreContextProvider = (props) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [user, setUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     fetchMenuList();
@@ -125,16 +126,9 @@ const StoreContextProvider = (props) => {
       setShowLogin(false);
     } catch (err) {
       console.error("Login error:", err);
-      if (err.response && err.response.data) {
-        setError(
-          err.response.data.message || "Failed to login. Please try again."
-        );
-      } else {
-        setError("Failed to login. Please try again.");
+      if (err.response && err.response.status === 401) {
+        setShowLogin(true);
       }
-      setTimeout(() => {
-        setError("");
-      }, 1000);
     }
   };
 
@@ -149,8 +143,17 @@ const StoreContextProvider = (props) => {
           "Content-Type": "application/json",
         },
       });
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1500);
+
+      console.log(orderRes);
     } catch (error) {
       console.log("Order not placed...", error);
+      if (err.response && err.response.status === 401) {
+        setShowLogin(true);
+      }
     }
   };
 
@@ -241,8 +244,15 @@ const StoreContextProvider = (props) => {
           "Content-Type": "application/json",
         },
       });
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
     } catch (err) {
       console.error("Registration error:", err);
+      if (err.response && err.response.status === 401) {
+        setShowLogin(true);
+      }
     }
   };
 
@@ -252,6 +262,21 @@ const StoreContextProvider = (props) => {
       console.log("Deleted.................");
     } catch (error) {
       console.error("Error in deleting Table", error);
+    }
+  };
+
+  const contactUs = async (data) => {
+    try {
+      await axios.post(`${ecafe}/user/contactus`, data);
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Error while creating contact", error);
+      if (err.response && err.response.status === 401) {
+        setShowLogin(true);
+      }
     }
   };
 
@@ -276,6 +301,9 @@ const StoreContextProvider = (props) => {
     setUser,
     showPopup,
     setShowPopup,
+    contactUs,
+    showLogin,
+    setShowLogin,
   };
 
   return (

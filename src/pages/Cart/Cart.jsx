@@ -15,19 +15,12 @@ const Cart = () => {
     totalAmount,
     placeOrder,
     showPopup,
-    setShowPopup
   } = useContext(StoreContext);
 
   const totalQuantity = getTotalQuantity();
-  const navigate = useNavigate();
 
   const handleOrder = () => {
-    setShowPopup(true);
-
     placeOrder();
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 1500);
   };
 
   return (

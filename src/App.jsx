@@ -12,16 +12,13 @@ import { StoreContext } from "./context/StoreContext";
 
 const App = () => {
   const [category, setCategory] = useState("All");
-  const [showLogin, setShowLogin] = useState(false);
-  const { user, setUser } = useContext(StoreContext);
+  const { showLogin } = useContext(StoreContext);
 
   return (
     <>
-      {showLogin && (
-        <LoginPopup setShowLogin={setShowLogin} />
-      )}
+      {showLogin && <LoginPopup />}
       <div className="app">
-        <Navbar setShowLogin={setShowLogin} />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />

@@ -4,9 +4,15 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 
-const Navbar = ({ setShowLogin }) => {
-  const { getTotalQuantity, handleLogout, handleTableBookingClick, user , setUser} =
-    useContext(StoreContext);
+const Navbar = () => {
+  const {
+    getTotalQuantity,
+    handleLogout,
+    handleTableBookingClick,
+    user,
+    setUser,
+    setShowLogin,
+  } = useContext(StoreContext);
   const totalQuantity = getTotalQuantity();
   const location = useLocation();
 
@@ -18,7 +24,7 @@ const Navbar = ({ setShowLogin }) => {
       setMenu("menu");
     } else if (location.pathname.startsWith("/table")) {
       setMenu("table");
-    } else if (location.hash === "#footer") {
+    } else if (location.hash === "#contact-us") {
       setMenu("contact-us");
     } else {
       setMenu("");
