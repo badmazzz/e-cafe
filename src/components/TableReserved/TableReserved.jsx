@@ -4,11 +4,10 @@ import { StoreContext } from "../../context/StoreContext";
 import "./TableReserved.css"; // Ensure this path is correct
 
 function TableReserved() {
-  const { table, handleDeleteTable } = useContext(StoreContext);
+  const { table, handleDeleteTable, user } = useContext(StoreContext);
 
   const handleEdit = (id) => {
     console.log("Edit item with id:", id);
-    // Define your edit logic here
   };
 
   const handleDelete = (id) => {
@@ -17,7 +16,7 @@ function TableReserved() {
   };
 
   return (
-    <div className="container">
+    <div className="table-container">
       <h2>Reserved Tables</h2>
       <div className="table-wrapper">
         <table className="table table-hover">
@@ -44,13 +43,7 @@ function TableReserved() {
             {table.map((item) => (
               <tr key={item._id}>
                 <td>{item.user.username}</td>
-                <td>
-                  {
-                    (new Date(item.date).toLocaleDateString(
-                      "en-CA"
-                    ))
-                  }
-                </td>
+                <td>{new Date(item.date).toLocaleDateString("en-CA")}</td>
                 <td>{item.time}</td>
                 <td>{item.guests}</td>
                 <td>

@@ -26,8 +26,9 @@ const Table = () => {
       <h1>Table Reservation</h1>
       <form className="reservation-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Name:</label>
+          <label className="label">Name:</label>
           <input
+            className="input"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -35,8 +36,9 @@ const Table = () => {
           />
         </div>
         <div className="form-group">
-          <label>Date:</label>
+          <label className="label">Date:</label>
           <input
+            className="input"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -44,8 +46,9 @@ const Table = () => {
           />
         </div>
         <div className="form-group">
-          <label>Time:</label>
+          <label className="label">Time:</label>
           <input
+            className="input"
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
@@ -53,8 +56,9 @@ const Table = () => {
           />
         </div>
         <div className="form-group">
-          <label>Number of Guests:</label>
+          <label className="label">Number of Guests:</label>
           <input
+            className="input"
             type="number"
             value={guest}
             onChange={(e) => setGuest(e.target.value)}

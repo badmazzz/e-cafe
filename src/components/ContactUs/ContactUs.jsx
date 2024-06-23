@@ -20,7 +20,7 @@ const ContactUs = () => {
 
   return (
     <>
-      <div className="container" id="">
+      <div className="contactus-container" id="">
         <div className="picture-container">
           <div className="picture">
             <svg

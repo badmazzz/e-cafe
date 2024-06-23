@@ -4,38 +4,36 @@ import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 
 const LoginPopup = () => {
-  const { handleLogin, handleRegister, setUser, setShowLogin } =
-    useContext(StoreContext);
-  const [currentState, setCurrentState] = useState("Login");
-  const [username, setUsername] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [phone, setPhone] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const {
+    handleLogin,
+    handleRegister,
+    setShowLogin,
+    currentState,
+    setCurrentState,
+    username,
+    setUsername,
+    street,
+    setStreet,
+    setAvatar,
+    city,
+    setCity,
+    zipcode,
+    setZipcode,
+    phone,
+    setPhone,
+    password,
+    setPassword,
+    email,
+    setEmail,
+  } = useContext(StoreContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username, email, password, avatar, phone);
 
     if (currentState === "Sign up") {
-      handleRegister(
-        username,
-        email,
-        password,
-        street,
-        city,
-        zipcode,
-        avatar,
-        phone,
-        setUser,
-        setShowLogin
-      );
+      handleRegister();
     } else {
-      handleLogin(email, password, setUser, setShowLogin);
+      handleLogin();
     }
   };
 
@@ -108,7 +106,6 @@ const LoginPopup = () => {
             required
           />
         </div>
-        {error && <p className="error">{error}</p>}
         <button type="submit">
           {currentState === "Sign up" ? "Create Account" : "Login"}
         </button>

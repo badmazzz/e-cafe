@@ -23,15 +23,16 @@
   width: 100%;
 }
 
-.form-group label {
+.form-group .label {
   color: var(--gray);
   margin: 10px 0;
 }
 
-.form-group input {
+.form-group .input {
   padding: 8px;
   border-radius: 5px;
   border: 1px solid #ddd;
+  background-color: whitesmoke;
   width: 100%;
   font-size: 16px;
   outline: none;
@@ -44,7 +45,7 @@
   margin-top: 20px;
 }
 
-.btn button {
+.btn {
   background: transparent;
   font-size: 16px;
   color: var(--dark);
@@ -57,11 +58,11 @@
   margin-bottom: 10px;
 }
 
-.btn button:hover {
+.btn:hover {
   background-color: #fff4f2;
 }
 
-.btn button:focus {
+.btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }

@@ -16,6 +16,10 @@ const Navbar = () => {
   const totalQuantity = getTotalQuantity();
   const location = useLocation();
 
+  // State to manage dropdown visibility
+  const [showDropdown, setShowDropdown] = useState(false);
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+
   // This effect sets the active menu based on the current path
   useEffect(() => {
     if (location.pathname === "/") {
@@ -89,12 +93,22 @@ const Navbar = () => {
             </div>
           </div>
           {user ? (
-            <img
-              src={user.avatar || assets.default_avatar}
-              alt="avatar"
-              className="avatar"
-              onClick={() => handleLogout(setUser)}
-            />
+            <div className="avatar-dropdown">
+              <img
+                src={user.avatar || assets.default_avatar}
+                alt="avatar"
+                className="avatar"
+                onClick={toggleDropdown}
+              />
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <Link to="/profile" onClick={toggleDropdown}>
+                    Your Profile
+                  </Link>
+                  <a onClick={() => handleLogout(setUser)}>Log Out</a>
+                </div>
+              )}
+            </div>
           ) : (
             <button onClick={() => setShowLogin(true)}>Sign in</button>
           )}

@@ -9,6 +9,7 @@ import LoginPopup from "./components/LoginPopup/LoginPopup";
 import Menu from "./pages/Menu/Menu";
 import TableBook from "./pages/TableBook/TableBook";
 import { StoreContext } from "./context/StoreContext";
+import UserProfile from "./components/UserProfile/UserProfile";
 
 const App = () => {
   const [category, setCategory] = useState("All");
@@ -19,6 +20,7 @@ const App = () => {
       {showLogin && <LoginPopup />}
       <div className="app">
         <Navbar />
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
@@ -28,6 +30,7 @@ const App = () => {
             element={<Menu category={category} setCategory={setCategory} />}
           />
           <Route path="/table" element={<TableBook />} />
+          <Route path="/profile" element={<UserProfile />} />
         </Routes>
       </div>
       <Footer />
