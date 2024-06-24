@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 
 export const StoreContext = createContext(null);
 
-const ecafe = "http://localhost:4000/api/v1";
+const ecafe = "https://e-cafe-backend.onrender.com";
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
