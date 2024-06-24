@@ -3,9 +3,36 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-// Ensure axios sends cookies with requests
+import axios from "axios";
+import Cookies from "js-cookie";
+
+// Setting default configurations for axios
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "https://e-cafe-backend.onrender.com/api/v1";
+
+// Handle Login
+const handleLogin = async () => {
+  try {
+    const response = await axios.post(`/user/login`, {
+      email,
+      password,
+    });
+    const { user, accessToken, refreshToken } = response.data.data;
+
+    // Storing user data in local storage and cookies
+    localStorage.setItem("user", JSON.stringify(user));
+    Cookies.set("accessToken", accessToken, { expires: 7 });
+    Cookies.set("refreshToken", refreshToken, { expires: 7 });
+
+    // Setting state
+    setUser(user);
+    setShowLogin(false);
+    toast.success(response.data.message);
+  } catch (err) {
+    console.error("Login error:", err);
+    toast.error(parseErrorMessage(err.response.data));
+  }
+};
 
 export const StoreContext = createContext(null);
 
@@ -119,31 +146,6 @@ const StoreContextProvider = (props) => {
       setTotalAmount(total + (itemInfo ? itemInfo.price * item.quantity : 0));
       return total + (itemInfo ? itemInfo.price * item.quantity : 0);
     }, 0);
-  };
-
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post("/user/login", { email, password });
-      const { user, accessToken, refreshToken } = response.data.data;
-
-      console.log("User:", user);
-      console.log("AccessToken:", accessToken);
-      console.log("RefreshToken:", refreshToken);
-
-      localStorage.setItem("user", JSON.stringify(user));
-      Cookies.set("accessToken", accessToken, { expires: 7, sameSite: 'None', secure: true });
-      Cookies.set("refreshToken", refreshToken, { expires: 7, sameSite: 'None', secure: true });
-
-      setUser(user);
-      setShowLogin(false);
-      toast.success(response.data.message);
-    } catch (err) {
-      console.error("Login error:", err);
-      if (err.response && err.response.status === 401) {
-        setShowLogin(true);
-      }
-      toast.error(parseErrorMessage(err.response.data));
-    }
   };
 
   const placeOrder = async () => {
