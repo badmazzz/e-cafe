@@ -16,6 +16,7 @@ import logout_icon from "./logout_icon.png";
 import parcel_icon from "./parcel_icon.png";
 import edit_icon from "./edit_icon.png";
 import trash_icon from "./trash_icon.png";
+import menu_icon from "./list_icon.svg";
 
 export const assets = {
   header_img,
@@ -35,4 +36,5 @@ export const assets = {
   parcel_icon,
   edit_icon,
   trash_icon,
+  menu_icon,
 };

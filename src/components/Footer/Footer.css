@@ -36,8 +36,9 @@ footer li {
   cursor: pointer;
 }
 
-footer h2 {
-  color: var(--primary);
+.header {
+  color: whitesmoke;
+  font-weight: 500;
 }
 
 .footer-social-icons img {
@@ -55,7 +56,7 @@ footer hr {
 
 .footer-copyright {
   text-align: center;
-  color: var(--primary);
+  color: whitesmoke;
 }
 
 @media (max-width: 750px) {

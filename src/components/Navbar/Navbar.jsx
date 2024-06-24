@@ -5,22 +5,15 @@ import { assets } from "../../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
-  const {
-    getTotalQuantity,
-    handleLogout,
-    handleTableBookingClick,
-    user,
-    setUser,
-    setShowLogin,
-  } = useContext(StoreContext);
+  const { getTotalQuantity, handleLogout, user, setUser, setShowLogin } =
+    useContext(StoreContext);
   const totalQuantity = getTotalQuantity();
   const location = useLocation();
+  const [hamburger, setHamburger] = useState(false);
 
-  // State to manage dropdown visibility
   const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  // This effect sets the active menu based on the current path
   useEffect(() => {
     if (location.pathname === "/") {
       setMenu("home");
@@ -37,41 +30,88 @@ const Navbar = () => {
 
   const [menu, setMenu] = useState("");
 
+  const handleMenuClick = () => {
+    setHamburger(false);
+  };
+
   return (
     <>
       <div className="navbar">
         <Link to="/" style={{ fontSize: "2em" }}>
           E-CAFE
         </Link>
-        <ul className="navbar-menu">
+        <ul className={`navbar-menu ${hamburger ? "active" : ""}`}>
           <Link
             to="/"
-            onClick={() => setMenu("home")}
+            onClick={() => {
+              setMenu("home");
+              handleMenuClick();
+            }}
             className={menu === "home" ? "active" : ""}
           >
             Home
           </Link>
           <Link
             to="/menu"
-            onClick={() => setMenu("menu")}
+            onClick={() => {
+              setMenu("menu");
+              handleMenuClick();
+            }}
             className={menu === "menu" ? "active" : ""}
           >
             Menu
           </Link>
-          <a
-            href="/table"
-            onClick={handleTableBookingClick}
+          <Link
+            to="/table"
+            onClick={() => {
+              setMenu("table");
+              handleMenuClick();
+            }}
             className={menu === "table" ? "active" : ""}
           >
             Table booking
-          </a>
+          </Link>
           <a
             href="#footer"
-            onClick={() => setMenu("contact-us")}
+            onClick={() => {
+              setMenu("contact-us");
+              handleMenuClick();
+            }}
             className={menu === "contact-us" ? "active" : ""}
           >
             Contact Us
           </a>
+          {hamburger && (
+            <div className="mobile-only">
+              <Link to="/cart" onClick={handleMenuClick}>
+                Cart
+              </Link>
+              {user ? (
+                <>
+                  <Link to="/profile" onClick={handleMenuClick}>
+                    Your Profile
+                  </Link>
+                  <a
+                    onClick={() => {
+                      handleLogout(setUser);
+                      handleMenuClick();
+                    }}
+                  >
+                    Log Out
+                  </a>
+                </>
+              ) : (
+                <a
+                  onClick={() => {
+                    setShowLogin(true);
+                    setHamburger(false);
+                  }}
+                >
+                  Sign in
+                </a>
+              )}
+            </div>
+          )}
         </ul>
         <div className="navbar-right">
           <div className="navbar-basket-icon">
@@ -111,6 +151,37 @@ const Navbar = () => {
             </div>
           ) : (
             <button onClick={() => setShowLogin(true)}>Sign in</button>
+          )}
+        </div>
+        <div className="hamburger" onClick={() => setHamburger(!hamburger)}>
+          {hamburger ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              fill="dark"
+              className="bi bi-x"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              fill="dark"
+              className="bi bi-list"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fillRule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+              />
+            </svg>
           )}
         </div>
       </div>

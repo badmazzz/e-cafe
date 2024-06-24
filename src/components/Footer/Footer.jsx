@@ -32,7 +32,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-content-center">
-          <h2>COMPANY</h2>
+          <h2 className="header">COMPANY</h2>
           <ul>
             <li onClick={() => navigate("/")}>Home</li>
             <li>About Us</li>
@@ -41,9 +41,9 @@ const Footer = () => {
           </ul>
         </div>
         <div className="footer-content-right">
-          <h2>GET IN TOUCH</h2>
+          <h2 className="header">GET IN TOUCH</h2>
           <ul>
-            <li>+91 XXXXX XXXXX</li>
+            <li>+91 92659 27392</li>
             <li>contact@ecafe.com</li>
           </ul>
         </div>

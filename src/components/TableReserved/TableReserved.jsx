@@ -8,10 +8,11 @@ function TableReserved() {
 
   const handleEdit = (id) => {
     console.log("Edit item with id:", id);
+    // Implement edit functionality as needed
   };
 
   const handleDelete = (id) => {
-    console.log(id);
+    console.log("Delete item with id:", id);
     handleDeleteTable(id);
   };
 
@@ -22,53 +23,50 @@ function TableReserved() {
         <table className="table table-hover">
           <thead className="thead-dark">
             <tr>
-              <th scope="col">
-                <h3>Username</h3>
-              </th>
-              <th scope="col">
-                <h3>Date</h3>
-              </th>
-              <th scope="col">
-                <h3>Time</h3>
-              </th>
-              <th scope="col">
-                <h3>Guests</h3>
-              </th>
-              <th scope="col">
-                <h3>Actions</h3>
-              </th>
+              <th>Username</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Guests</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {table.map((item) => (
               <tr key={item._id}>
-                <td>{item.user.username}</td>
-                <td>{new Date(item.date).toLocaleDateString("en-CA")}</td>
-                <td>{item.time}</td>
-                <td>{item.guests}</td>
-                <td>
-                  <div className="action-buttons">
-                    <button
-                      className="btn btn-sm mx-1"
-                      onClick={() => handleEdit(item._id)}
-                    >
-                      <img
-                        src={assets.edit_icon}
-                        alt="Edit"
-                        className="edit-icon"
-                      />
-                    </button>
-                    <button
-                      className="btn btn-sm mx-1"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      <img
-                        src={assets.trash_icon}
-                        alt="Delete"
-                        className="delete-icon"
-                      />
-                    </button>
-                  </div>
+                <td data-label="Username">{item.user.username}</td>
+                <td data-label="Date">
+                  {new Date(item.date).toLocaleDateString("en-CA")}
+                </td>
+                <td data-label="Time">{item.time}</td>
+                <td data-label="Guests">{item.guests}</td>
+                <td className="action-column" data-label="Edit">
+                  <button
+                    className="btn1 btn-sm mx-1"
+                    onClick={() => handleEdit(item._id)}
+                  >
+                    <img
+                      src={assets.edit_icon}
+                      alt="Edit"
+                      className="edit-icon"
+                      height={20}
+                      width={20}
+                    />
+                  </button>
+                </td>
+                <td className="action-column" data-label="Delete">
+                  <button
+                    className="btn1 btn-sm mx-1"
+                    onClick={() => handleDelete(item._id)}
+                  >
+                    <img
+                      src={assets.trash_icon}
+                      alt="Delete"
+                      className="delete-icon"
+                      height={20}
+                      width={20}
+                    />
+                  </button>
                 </td>
               </tr>
             ))}
