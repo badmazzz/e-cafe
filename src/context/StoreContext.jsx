@@ -3,11 +3,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
+// Ensure axios sends cookies with requests
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "https://e-cafe-backend.onrender.com/api/v1";
 
 export const StoreContext = createContext(null);
-
-const ecafe = "https://e-cafe-backend.onrender.com/api/v1";
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState([]);
@@ -44,20 +44,12 @@ const StoreContextProvider = (props) => {
 
   const parseErrorMessage = (responseHTMLString) => {
     const parser = new DOMParser();
-
-    const responseDocument = parser.parseFromString(
-      responseHTMLString,
-      "text/html"
-    );
-
+    const responseDocument = parser.parseFromString(responseHTMLString, "text/html");
     const errorMessageElement = responseDocument.querySelector("pre");
 
     if (errorMessageElement) {
       const errorMessageText = errorMessageElement.textContent.trim();
-
-      const errorMessageMatch = errorMessageText.match(
-        /^Error:\s*(.*?)(?=\s*at|$)/
-      );
+      const errorMessageMatch = errorMessageText.match(/^Error:\s*(.*?)(?=\s*at|$)/);
 
       if (errorMessageMatch && errorMessageMatch[1]) {
         return errorMessageMatch[1].trim();
@@ -70,9 +62,9 @@ const StoreContextProvider = (props) => {
 
   const fetchMenuList = async () => {
     try {
-      const menuRes = await axios.get(`${ecafe}/menu/`);
+      const menuRes = await axios.get("/menu/");
       setFoodList(menuRes.data.data);
-      const exploreRes = await axios.get(`${ecafe}/menu/explore`);
+      const exploreRes = await axios.get("/menu/explore");
       setExploreMenu(exploreRes.data);
     } catch (err) {
       console.error("Error fetching menu list:", err);
@@ -81,7 +73,7 @@ const StoreContextProvider = (props) => {
 
   const fetchTableList = async () => {
     try {
-      const tableRes = await axios.get(`${ecafe}/table/`);
+      const tableRes = await axios.get("/table/");
       setTable(tableRes.data.data);
     } catch (err) {
       console.error("Error fetching menu list:", err);
@@ -90,19 +82,12 @@ const StoreContextProvider = (props) => {
 
   const addToCart = (itemId) => {
     setCartItems((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (item) => item.menuId === itemId
-      );
-
+      const existingItemIndex = prev.findIndex((item) => item.menuId === itemId);
       if (existingItemIndex === -1) {
-        // Item doesn't exist in the cart, add it with quantity 1
         return [...prev, { menuId: itemId, quantity: 1 }];
       } else {
-        // Item exists, increment the quantity
         return prev.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+          index === existingItemIndex ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
     });
@@ -110,22 +95,16 @@ const StoreContextProvider = (props) => {
 
   const removeFromCart = (itemId) => {
     setCartItems((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (item) => item.menuId === itemId
-      );
-
+      const existingItemIndex = prev.findIndex((item) => item.menuId === itemId);
       if (existingItemIndex !== -1) {
         if (prev[existingItemIndex].quantity === 1) {
           return prev.filter((item, index) => index !== existingItemIndex);
         } else {
           return prev.map((item, index) =>
-            index === existingItemIndex
-              ? { ...item, quantity: item.quantity - 1 }
-              : item
+            index === existingItemIndex ? { ...item, quantity: item.quantity - 1 } : item
           );
         }
       }
-
       return prev;
     });
   };
@@ -144,29 +123,22 @@ const StoreContextProvider = (props) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${ecafe}/user/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post("/user/login", { email, password });
       const { user, accessToken, refreshToken } = response.data.data;
 
-      // Logging for debugging
       console.log("User:", user);
       console.log("AccessToken:", accessToken);
       console.log("RefreshToken:", refreshToken);
 
-      // Storing user data in local storage and cookies
       localStorage.setItem("user", JSON.stringify(user));
-      Cookies.set("accessToken", accessToken, { expires: 7 });
-      Cookies.set("refreshToken", refreshToken, { expires: 7 });
+      Cookies.set("accessToken", accessToken, { expires: 7, sameSite: 'None', secure: true });
+      Cookies.set("refreshToken", refreshToken, { expires: 7, sameSite: 'None', secure: true });
 
-      // Setting state
       setUser(user);
       setShowLogin(false);
       toast.success(response.data.message);
     } catch (err) {
       console.error("Login error:", err);
-
       if (err.response && err.response.status === 401) {
         setShowLogin(true);
       }
@@ -175,15 +147,10 @@ const StoreContextProvider = (props) => {
   };
 
   const placeOrder = async () => {
-    const data = {
-      cartItems,
-      totalAmount,
-    };
+    const data = { cartItems, totalAmount };
     try {
-      const orderRes = await axios.post(`${ecafe}/order/create`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const orderRes = await axios.post("/order/create", data, {
+        headers: { "Content-Type": "application/json" },
       });
       toast.success(orderRes.data.message);
     } catch (err) {
@@ -207,10 +174,8 @@ const StoreContextProvider = (props) => {
     formData.append("phone", phone);
 
     try {
-      const response = await axios.post(`${ecafe}/user/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await axios.post("/user/register", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       await handleLogin(email, password, setUser, setShowLogin);
       toast.success(response.data.message);
@@ -224,7 +189,7 @@ const StoreContextProvider = (props) => {
     let ans = window.confirm("Are you sure you want to logout?");
     if (ans) {
       try {
-        const response = await axios.post(`${ecafe}/user/logout`);
+        const response = await axios.post("/user/logout");
         localStorage.removeItem("user");
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
@@ -239,18 +204,10 @@ const StoreContextProvider = (props) => {
   };
 
   const handleTableRegistration = async (name, date, time, guests) => {
-    const data = {
-      name,
-      date,
-      time,
-      guests,
-    };
-
+    const data = { name, date, time, guests };
     try {
-      const response = await axios.post(`${ecafe}/table/add`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.post("/table/add", data, {
+        headers: { "Content-Type": "application/json" },
       });
       toast.success(response.data.message);
     } catch (err) {
@@ -264,7 +221,7 @@ const StoreContextProvider = (props) => {
 
   const handleDeleteTable = async (id) => {
     try {
-      const response = await axios.delete(`${ecafe}/table/${id}`);
+      const response = await axios.delete(`/table/${id}`);
       toast.success(response.data.message);
     } catch (err) {
       toast.error(parseErrorMessage(err.response.data));
@@ -273,10 +230,10 @@ const StoreContextProvider = (props) => {
 
   const contactUs = async (data) => {
     try {
-      const response = await axios.post(`${ecafe}/user/contactus`, data);
+      const response = await axios.post("/user/contactus", data);
       toast.success(response.data.message);
     } catch (err) {
-      console.error("Error while creating contact", error);
+      console.error("Error while creating contact", err);
       if (err.response && err.response.status === 401) {
         setShowLogin(true);
       }
@@ -286,13 +243,10 @@ const StoreContextProvider = (props) => {
 
   const updateProfile = async (data) => {
     try {
-      const response = await axios.patch(`${ecafe}/user/update-account`, data);
+      const response = await axios.patch("/user/update-account", data);
       const { user } = response.data.data;
-
       console.log("User:", user);
-
       localStorage.setItem("user", JSON.stringify(user));
-
       setUser(user);
       setShowLogin(false);
       toast.success(response.data.message);
@@ -305,16 +259,12 @@ const StoreContextProvider = (props) => {
     const formData = new FormData();
     formData.append("avatar", avatar);
     try {
-      const response = await axios.patch(`${ecafe}/user/avatar`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await axios.patch("/user/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       const { user } = response.data.data;
       console.log("User:", user);
-
       localStorage.setItem("user", JSON.stringify(user));
-
       setUser(user);
       setShowLogin(false);
       toast.success("Avatar updated successfully");
