@@ -6,7 +6,18 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": "https://e-cafe-backend.onrender.com/api/v1",
+      '/api': {
+        target: 'https://e-cafe-backend.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            // To modify headers or log requests
+            proxyReq.setHeader('Origin', 'https://e-cafe.onrender.com');
+          });
+        },
+      },
     },
   },
 })
